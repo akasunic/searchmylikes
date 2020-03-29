@@ -18,10 +18,8 @@ window.onload = function() {
 
 }
 
-
 var videoArray = [];
-
-
+var links;
 
 
 var fetchResults = function(pageToken){
@@ -43,20 +41,27 @@ var fetchResults = function(pageToken){
       fetch('https://www.googleapis.com/youtube/v3/videos?part=snippet&myRating=like&maxResults=50' + pageToken, init)
         .then((response) => response.json())
           .then(function(data){
-            console.log(data)
+            console.log(data);
+            //next page token, for running fetch next time
             pageToken = '&pageToken=' + data.nextPageToken;
-            //Then for each item listed for the page, will add the title results to an array
-            console.log(test);
-            console.log(pageToken);
-            videoArray.push(test);
-            //WILL WANT TO SEARCH TITLES< BUT WILL LIKELY WANT TO STORE MORE-- at very least, will need video links!
+            //add each item to the video array for searching
+            links = data.items;
+            var i;
+            for (i=0; i<links.length; i++){
+              var link = 'https://www.youtube.com/watch?v=' + links[i]['id'];
+              var snippet = links[i]['snippet'];
+              var title = snippet.title;
+              var channel = snippet.channelTitle;
+              var thumbnail = snippet.thumbnails.default.url;
+              var item = {'link': link, 'title': title, 'channel':channel, 'thumbnail': thumbnail};
+              videoArray.push(item);
+            }
             
-      if(test > 2){ //referring to my pages, in particular
-      // if(pageToken == '&pageToken=undefined' || test > 22){ //referring to my pages, in particular
+      // if(test > 2){ //to keep testing short
+      if(pageToken == '&pageToken=undefined' || test > 22){ //referring to my pages, in particular
+        console.log(pageToken);
         console.log('outOfPages');
-        console.log(videoArray);
-        //DON'T give button functionality yet? Or don't even load search bar yet, perhaps
-
+        console.log(videoArray.length);
         document.querySelector('#myLoadMessage').innerHTML = "Videos loaded. Search away!";
         // ADD FUNCTIONALITY TO BUTTON HERE (COULD ALSO CHANGE COLOR OF BUTTON OR SOMETHING)
         //WILL ALSO WANT A MESSAGE FOR ERROR IF VIDEOS NOT PROPERLY LOADING
@@ -71,9 +76,6 @@ var fetchResults = function(pageToken){
            
 
         });//ends function using data
-      
-      // console.log(pageToken);
-      // fetchResults(pageToken);
   
       //keep looging next page token until there are no more pages
         //TRYING: https://stackoverflow.com/questions/45008330/how-can-i-use-fetch-in-while-loop
