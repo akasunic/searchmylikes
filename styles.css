@@ -1,0 +1,15 @@
+#mySearchResults{
+	display:flex;
+	flex-wrap:wrap;
+
+
+}
+
+button{
+	background-color:green;
+}
+
+a{
+	word-wrap: break-word;
+	align-self:center;
+}

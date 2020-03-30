@@ -66,6 +66,7 @@ var fetchResults = function(pageToken){
         //add Search functionality to search button now
         //searching for each word, by channel or title only
         document.querySelector('#mySearchButton').addEventListener('click', function(){
+          document.querySelector('#mySearchResults').innerHTML = '';
           var searchCriteria = document.querySelector('#mySearchBar').value.toUpperCase().split(" ");
           console.log("searchCriteria length: ", searchCriteria.length);
 
@@ -79,8 +80,6 @@ var fetchResults = function(pageToken){
               console.log(currentLink);
               if (currentLink.title.toUpperCase().indexOf(word)>-1 || currentLink.channel.toUpperCase().indexOf(word)>-1){
                 wordCount += 1;
-                console.log("word: ", word);
-                console.log(currentLink.title);
               }
 
             }
@@ -91,9 +90,12 @@ var fetchResults = function(pageToken){
               //first let's just make page of links
               //then maybe add thumbnails and channel
               var div = document.createElement('div');
+              var image = document.createElement('img');
+              image.src = currentLink.thumbnail;
               var match = document.createElement('a');
               match.href = currentLink.link;
               match.innerHTML = currentLink.title;
+              div.appendChild(image);
               div.appendChild(match);
               document.querySelector('#mySearchResults').appendChild(div);
             }
@@ -105,9 +107,6 @@ var fetchResults = function(pageToken){
         // ADD FUNCTIONALITY TO BUTTON HERE (COULD ALSO CHANGE COLOR OF BUTTON OR SOMETHING)
         //WILL ALSO WANT A MESSAGE FOR ERROR IF VIDEOS NOT PROPERLY LOADING
 
-        //LOOP through all array items (video titles + links) and find out if text matches that of title
-        //possibly look into: fuzzymatching algorithms, javascript
-
       }
       else{
         fetchResults(pageToken);
@@ -116,7 +115,7 @@ var fetchResults = function(pageToken){
 
         });//ends function using data
   
-      //keep looging next page token until there are no more pages
+      //keep looging next page token until there are no more pages, thanks to:::
         //TRYING: https://stackoverflow.com/questions/45008330/how-can-i-use-fetch-in-while-loop
       
         
