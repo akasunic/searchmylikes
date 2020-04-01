@@ -6,8 +6,8 @@
 //*************LOOK INTO turning all this into background.js-- like, not the search bar part, but loading the videos. oh or like, not background.js actually-- need to load once a day and store. easier to just keep as is. background.js would still need to be loaded multiple times a day
 'use strict';
 var pageToken = '';
-var test = 0;
-
+var videoArray = [];
+var links;
 
 // Probably not with a button. Probably it just happens when you click the extension icon. And then a search bar appears. Which would mean you'd want this as a pop up.
 // maybe brwoser_action is already considered a pop-up, I dunno
@@ -16,10 +16,51 @@ window.onload = function() {
 
   fetchResults(pageToken);
 
+
+
+  document.querySelector('#mySearchButton').addEventListener('click', function(){
+  document.querySelector('#mySearchResults').innerHTML = '';
+  var searchCriteria = document.querySelector('#mySearchBar').value.toUpperCase().split(" ");
+  // console.log("searchCriteria length: ", searchCriteria.length);
+  var i;
+  for (i=0; i<videoArray.length; i++){
+    var wordCount = 0;
+    var currentLink = videoArray[i];
+    // console.log(currentLink);
+    var x; var word;
+    for (x = 0; x<searchCriteria.length; x++){
+      word = searchCriteria[x];
+      // console.log(currentLink);
+      if (currentLink.title.toUpperCase().indexOf(word)>-1 || currentLink.channel.toUpperCase().indexOf(word)>-1){
+        wordCount += 1;
+      }
+
+    }
+    // console.log('exited word for loop');
+    if (wordCount === searchCriteria.length){
+      //display the link if all search criteria met
+      //could change options for search if desired, but let's start with this
+      //first let's just make page of links
+      //then maybe add thumbnails and channel
+      var div = document.createElement('div');
+      var image = document.createElement('img');
+      image.src = currentLink.thumbnail;
+      var match = document.createElement('a');
+      match.href = currentLink.link;
+      match.innerHTML = currentLink.title;
+      div.appendChild(image);
+      div.appendChild(match);
+      document.querySelector('#mySearchResults').appendChild(div);
+    }
+  }//ends outer for loop (videoArray loop)
+
+
+
+});//ends search button functionality code
+
 }
 
-var videoArray = [];
-var links;
+
 
 
 var fetchResults = function(pageToken){
@@ -35,7 +76,6 @@ var fetchResults = function(pageToken){
         },
         'contentType': 'json'
       };  
-      test += 1;
 
 
       fetch('https://www.googleapis.com/youtube/v3/videos?part=snippet&myRating=like&maxResults=50' + pageToken, init)
@@ -59,51 +99,15 @@ var fetchResults = function(pageToken){
             //WORKING PRETTY WELL BUT NEXTPAGETOKEN STOPS APPEARING AT VIDEO 989. MAY NEED A WORKAROUND!!
       // if(test > 2){ //to keep testing short
       if(pageToken == '&pageToken=undefined'){ //referring to my pages, in particular
-        console.log(pageToken);
-        console.log('outOfPages');
-        console.log(videoArray.length);
+        // console.log(pageToken);
+        // console.log('outOfPages');
+        // console.log(videoArray.length);
         document.querySelector('#myLoadMessage').innerHTML = "Videos loaded. Search away!";
+        document.querySelector("#mySearchBar").style.display = "block";
+        document.querySelector("#mySearchButton").style.display = "block";
         //add Search functionality to search button now
         //searching for each word, by channel or title only
-        document.querySelector('#mySearchButton').addEventListener('click', function(){
-          document.querySelector('#mySearchResults').innerHTML = '';
-          var searchCriteria = document.querySelector('#mySearchBar').value.toUpperCase().split(" ");
-          console.log("searchCriteria length: ", searchCriteria.length);
 
-          for (i=0; i<videoArray.length; i++){
-            var wordCount = 0;
-            var currentLink = videoArray[i];
-            console.log(currentLink);
-            var x; var word;
-            for (x = 0; x<searchCriteria.length; x++){
-              word = searchCriteria[x];
-              console.log(currentLink);
-              if (currentLink.title.toUpperCase().indexOf(word)>-1 || currentLink.channel.toUpperCase().indexOf(word)>-1){
-                wordCount += 1;
-              }
-
-            }
-            console.log('exited word for loop');
-            if (wordCount === searchCriteria.length){
-              //display the link if all search criteria met
-              //could change options for search if desired, but let's start with this
-              //first let's just make page of links
-              //then maybe add thumbnails and channel
-              var div = document.createElement('div');
-              var image = document.createElement('img');
-              image.src = currentLink.thumbnail;
-              var match = document.createElement('a');
-              match.href = currentLink.link;
-              match.innerHTML = currentLink.title;
-              div.appendChild(image);
-              div.appendChild(match);
-              document.querySelector('#mySearchResults').appendChild(div);
-            }
-          }//ends outer for loop (videoArray loop)
-          
-
-
-        });//ends search button functionality code
         // ADD FUNCTIONALITY TO BUTTON HERE (COULD ALSO CHANGE COLOR OF BUTTON OR SOMETHING)
         //WILL ALSO WANT A MESSAGE FOR ERROR IF VIDEOS NOT PROPERLY LOADING
 
@@ -124,8 +128,6 @@ var fetchResults = function(pageToken){
 
 
  }//ends fetchReults definition
-
-
 
 
 

@@ -5,8 +5,13 @@
 
 }
 
-button{
-	background-color:green;
+#mySearchBar{
+	display:none;
+}
+
+
+#mySearchButton {
+	display:none;
 }
 
 a{
