@@ -3,6 +3,9 @@
 // found in the LICENSE file.
 
 
+//first step: add results to storage-- for now, leaving date out, but should probably hae that
+
+
 //*************LOOK INTO turning all this into background.js-- like, not the search bar part, but loading the videos. oh or like, not background.js actually-- need to load once a day and store. easier to just keep as is. background.js would still need to be loaded multiple times a day
 'use strict';
 var pageToken = '';
@@ -14,27 +17,43 @@ var links;
 window.onload = function() {
 //   document.querySelector('button').addEventListener('click', fetchResults(pageToken));
 
-  fetchResults(pageToken);
+
+  chrome.storage.local.get(['videos'], function(result) {
+    console.log(result.videos);
+    if (result.videos == undefined){
+      console.log('fetching results');
+      fetchResults(pageToken);
+    }
+    else{
+      getStoredResults();
+    }
+  });
 
 
+  // fetchResults(pageToken);
+
+
+  document.querySelector('#refresh').addEventListener('click', function(){
+    videoArray = [];
+    fetchResults(pageToken);
+  });
 
   document.querySelector('#mySearchButton').addEventListener('click', function(){
-  document.querySelector('#mySearchResults').innerHTML = '';
-  var searchCriteria = document.querySelector('#mySearchBar').value.toUpperCase().split(" ");
-  // console.log("searchCriteria length: ", searchCriteria.length);
-  var i;
-  for (i=0; i<videoArray.length; i++){
-    var wordCount = 0;
-    var currentLink = videoArray[i];
-    // console.log(currentLink);
-    var x; var word;
-    for (x = 0; x<searchCriteria.length; x++){
-      word = searchCriteria[x];
+    document.querySelector('#mySearchResults').innerHTML = '';
+    var searchCriteria = document.querySelector('#mySearchBar').value.toUpperCase().split(" ");
+    // console.log("searchCriteria length: ", searchCriteria.length);
+    var i;
+    for (i=0; i<videoArray.length; i++){
+      var wordCount = 0;
+      var currentLink = videoArray[i];
       // console.log(currentLink);
-      if (currentLink.title.toUpperCase().indexOf(word)>-1 || currentLink.channel.toUpperCase().indexOf(word)>-1){
-        wordCount += 1;
-      }
-
+      var x; var word;
+      for (x = 0; x<searchCriteria.length; x++){
+        word = searchCriteria[x];
+        // console.log(currentLink);
+        if (currentLink.title.toUpperCase().indexOf(word)>-1 || currentLink.channel.toUpperCase().indexOf(word)>-1){
+          wordCount += 1;
+        }
     }
     // console.log('exited word for loop');
     if (wordCount === searchCriteria.length){
@@ -64,6 +83,9 @@ window.onload = function() {
 
 
 var fetchResults = function(pageToken){
+  document.querySelector('#myLoadMessage').innerHTML = "Loading your videos, this may take a moment.";
+  document.querySelector("#mySearchBar").style.display = "none";
+  document.querySelector("#mySearchButton").style.display = "none";
 
 
   chrome.identity.getAuthToken({interactive: true}, function(token) {
@@ -102,6 +124,9 @@ var fetchResults = function(pageToken){
         // console.log(pageToken);
         // console.log('outOfPages');
         // console.log(videoArray.length);
+        chrome.storage.local.set({'videos': videoArray}, function(){
+          console.log(videoArray);
+        });
         document.querySelector('#myLoadMessage').innerHTML = "Videos loaded. Search away!";
         document.querySelector("#mySearchBar").style.display = "block";
         document.querySelector("#mySearchButton").style.display = "block";
@@ -130,4 +155,13 @@ var fetchResults = function(pageToken){
  }//ends fetchReults definition
 
 
+var getStoredResults = function(){
+    chrome.storage.local.get(['videos'], function(result) {
+      videoArray = result.videos;
+      document.querySelector('#myLoadMessage').innerHTML = "Videos loaded. Search away!";
+      document.querySelector("#mySearchBar").style.display = "block";
+      document.querySelector("#mySearchButton").style.display = "block";
+    });
+    
+};
 
