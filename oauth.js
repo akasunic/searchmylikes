@@ -124,7 +124,8 @@ var fetchResults = function(pageToken){
         // console.log(pageToken);
         // console.log('outOfPages');
         // console.log(videoArray.length);
-        chrome.storage.local.set({'videos': videoArray}, function(){
+        var today = (new Date()).toJSON();
+        chrome.storage.local.set({'videos': videoArray,'date': today}, function(){
           console.log(videoArray);
         });
         document.querySelector('#myLoadMessage').innerHTML = "Videos loaded. Search away!";
@@ -156,8 +157,11 @@ var fetchResults = function(pageToken){
 
 
 var getStoredResults = function(){
-    chrome.storage.local.get(['videos'], function(result) {
+    chrome.storage.local.get(['videos', 'date'], function(result) {
       videoArray = result.videos;
+      var storedDate = new Date(result.date);
+      console.log(storedDate);
+      document.querySelector('#date').innerHTML = "This video list was last updated on " + storedDate + ". You can choose to update the list to include all your most recent likes. It may take a moment, depending on how many videos you've liked.";
       document.querySelector('#myLoadMessage').innerHTML = "Videos loaded. Search away!";
       document.querySelector("#mySearchBar").style.display = "block";
       document.querySelector("#mySearchButton").style.display = "block";
