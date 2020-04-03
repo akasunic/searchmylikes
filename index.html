@@ -5,11 +5,17 @@
      <link rel="stylesheet" href="styles.css">
    </head>
    <body>
+    <div class="container">
     <div id="myLoadMessage">Loading your videos, this may take a moment.</div>
-    <input type="text" id="mySearchBar" placeholder="Search your liked videos...">
-    <button id="mySearchButton">Search</button>
-    <p id = 'date'><p>
-    <button id = 'refresh'>Update to latest list of liked videos</button>
+    <div class="inline">
+      <input type="text" id="mySearchBar" placeholder="Search your liked videos...">
+      <button id="mySearchButton">Search</button>
+    </div>
+    <div class = "inline">
+      <i><p id = 'date'><p></i>
+      <button id = 'refresh'><i>Update to latest list of liked videos</i></button>
+    </div>
     <div id="mySearchResults"></div>
+  </div>
    </body>
  </html>

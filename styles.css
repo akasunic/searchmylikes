@@ -1,20 +1,82 @@
-#mySearchResults{
+body{
+	font-family: 'Roboto', sans-serif;
+
+}
+
+.container{
+	margin: 20 20 20 20;
 	display:flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+/*#mySearchResults{
+	display:flex;
+	flex-direction:row;
 	flex-wrap:wrap;
+	align-items: flex-start;
+	align-content:flex-start;
+	justify-content:center;
 
+}
+*/
+img{
+	align-self:center;
+}
+
+.container2{
+	margin: 20 20 20 20;
+	display:flex;
+	flex-direction: row;
 
 }
 
-#mySearchBar{
-	display:none;
+.inline, .inline{
+	display:flex;
+	flex-direction: row;
+	align-items: stretch;
 }
 
+button{
+	margin:0px 0px 0px 20px;
+	border-radius:10px;
+	transition: all 0.4s ease 0s;
+}
+
+#refresh{
+	background:#ef9f07;
+	color:white;
+}
 
 #mySearchButton {
 	display:none;
+	flex-grow:1;
+	background:#449775;
+	color:white;
 }
+
+
+button:hover{
+	background: #434343;
+	box-shadow: 5px 40px -10px rgba(0,0,0,0.57);
+	-webkit-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+	-moz-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
+	transition: all 0.4s ease 0s;
+}
+
+#myLoadMessage{
+	margin: 0px 0px 10px 0px;
+}
+
+
+#mySearchBar{
+	display:none;
+	flex-grow:3;
+}
+
 
 a{
 	word-wrap: break-word;
-	align-self:center;
+	padding: 20px;
+
 }

@@ -38,6 +38,13 @@ window.onload = function() {
     fetchResults(pageToken);
   });
 
+  //execute search button click if user presses enter
+  document.querySelector("#mySearchBar").addEventListener("keyup", function(event){
+    if(event.keyCode === 13){
+      document.querySelector('#mySearchButton').click();
+    }
+  });
+
   document.querySelector('#mySearchButton').addEventListener('click', function(){
     document.querySelector('#mySearchResults').innerHTML = '';
     var searchCriteria = document.querySelector('#mySearchBar').value.toUpperCase().split(" ");
@@ -62,6 +69,7 @@ window.onload = function() {
       //first let's just make page of links
       //then maybe add thumbnails and channel
       var div = document.createElement('div');
+      div.classList.add("container2");
       var image = document.createElement('img');
       image.src = currentLink.thumbnail;
       var match = document.createElement('a');
@@ -119,7 +127,6 @@ var fetchResults = function(pageToken){
               videoArray.push(item);
             }
             //WORKING PRETTY WELL BUT NEXTPAGETOKEN STOPS APPEARING AT VIDEO 989. MAY NEED A WORKAROUND!!
-      // if(test > 2){ //to keep testing short
       if(pageToken == '&pageToken=undefined'){ //referring to my pages, in particular
         // console.log(pageToken);
         // console.log('outOfPages');
@@ -161,7 +168,7 @@ var getStoredResults = function(){
       videoArray = result.videos;
       var storedDate = new Date(result.date);
       console.log(storedDate);
-      document.querySelector('#date').innerHTML = "This video list was last updated on " + storedDate + ". You can choose to update the list to include all your most recent likes. It may take a moment, depending on how many videos you've liked.";
+      document.querySelector('#date').innerHTML = "This video list was last updated on " + storedDate.toLocaleDateString("en-US")  + "."; 
       document.querySelector('#myLoadMessage').innerHTML = "Videos loaded. Search away!";
       document.querySelector("#mySearchBar").style.display = "block";
       document.querySelector("#mySearchButton").style.display = "block";
