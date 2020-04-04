@@ -47,6 +47,7 @@ window.onload = function() {
 
   document.querySelector('#mySearchButton').addEventListener('click', function(){
     document.querySelector('#mySearchResults').innerHTML = '';
+    var matches = 0;
     var searchCriteria = document.querySelector('#mySearchBar').value.toUpperCase().split(" ");
     // console.log("searchCriteria length: ", searchCriteria.length);
     var i;
@@ -68,20 +69,31 @@ window.onload = function() {
       //could change options for search if desired, but let's start with this
       //first let's just make page of links
       //then maybe add thumbnails and channel
+      matches += 1;
       var div = document.createElement('div');
       div.classList.add("container2");
+      var div2 = document.createElement('div');
+      div2.classList.add('container3');
       var image = document.createElement('img');
       image.src = currentLink.thumbnail;
       var match = document.createElement('a');
       match.href = currentLink.link;
       match.innerHTML = currentLink.title;
+      var channel = document.createElement('p');
+      channel.innerHTML = currentLink.channel;
       div.appendChild(image);
-      div.appendChild(match);
+      div2.appendChild(match);
+      div2.appendChild(channel);
+      div.appendChild(div2);
       document.querySelector('#mySearchResults').appendChild(div);
     }
+
   }//ends outer for loop (videoArray loop)
 
-
+  if (matches == 0){
+    console.log('matches: ', matches);
+    document.querySelector('#mySearchResults').innerHTML = '<b>Sorry, no liked videos matched those criteria</b>';
+  }
 
 });//ends search button functionality code
 
@@ -133,7 +145,7 @@ var fetchResults = function(pageToken){
         // console.log(videoArray.length);
         var today = (new Date()).toJSON();
         chrome.storage.local.set({'videos': videoArray,'date': today}, function(){
-          console.log(videoArray);
+          // console.log(videoArray);
         });
         document.querySelector('#myLoadMessage').innerHTML = "Videos loaded. Search away!";
         document.querySelector("#mySearchBar").style.display = "block";
