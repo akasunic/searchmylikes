@@ -22,7 +22,7 @@ window.onload = function() {
 
 
   chrome.storage.local.get(['videos'], function(result) {
-    console.log(result.videos);
+    // console.log(result.videos);
     if (result.videos == undefined){
       console.log('fetching results');
       fetchResults(pageToken);
@@ -135,8 +135,8 @@ var fetchResults = function(pageToken){
             // pageToken = '&pageToken=' + data.nextPageToken;
             pos += maxResults/10;
             pageToken = '&pageToken=' + pageTokens[pos];
-            console.log(pageToken);
-            console.log(videoArray.length);
+            // console.log(pageToken);
+            // console.log(videoArray.length);
             //add each item to the video array for searching
             try{
               links = data.items;
@@ -153,14 +153,13 @@ var fetchResults = function(pageToken){
           }
           catch(error){
             totalResults = 0; //so that the next if clause runs
-            console.log(error);
+            // console.log(error);
 
           }
-            //WORKING PRETTY WELL BUT NEXTPAGETOKEN STOPS APPEARING AT VIDEO 989. MAY NEED A WORKAROUND!!
           
       if(videoArray.length >= totalResults){ //referring to my pages, in particular
         // console.log(pageToken);
-        console.log('outOfPages');
+        // console.log('outOfPages');
         console.log(videoArray.length);
         var today = (new Date()).toJSON();
         chrome.storage.local.set({'videos': videoArray,'date': today}, function(){
@@ -196,7 +195,7 @@ var getStoredResults = function(){
     chrome.storage.local.get(['videos', 'date'], function(result) {
       videoArray = result.videos;
       var storedDate = new Date(result.date);
-      console.log(storedDate);
+      // console.log(storedDate);
       document.querySelector('#date').innerHTML = "This video list was last updated on " + storedDate.toLocaleDateString("en-US")  + "."; 
       document.querySelector('#myLoadMessage').innerHTML = "Videos loaded. Search away!";
       document.querySelector("#mySearchBar").style.display = "block";
