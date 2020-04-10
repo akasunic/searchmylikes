@@ -1,0 +1,32 @@
+{
+  "name": "Search My YouTube Likes",
+  "version": "1.01",
+  "description": "Uses OAuth to search through videos that you have liked on YouTube.",
+  "manifest_version": 2,
+  "browser_action": {
+    "default_title": "Search My YouTube Likes"
+  },
+  "permissions": [
+    "identity", 
+    "storage", 
+    "unlimitedStorage"
+  ],
+  "icons":{
+    "128": "icon128.png"
+  },
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": false
+  },
+  
+
+  "oauth2": {
+    "client_id": "somethingReallyLong.apps.googleusercontent.com",
+    "scopes":[
+      "https://www.googleapis.com/auth/youtube.readonly"
+    ]
+  }
+  
+}
