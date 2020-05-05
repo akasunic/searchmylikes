@@ -1,13 +1,5 @@
-// Copyright 2018 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
 
-
-//first step: add results to storage-- for now, leaving date out, but should probably hae that
-
-
-//*************LOOK INTO turning all this into background.js-- like, not the search bar part, but loading the videos. oh or like, not background.js actually-- need to load once a day and store. easier to just keep as is. background.js would still need to be loaded multiple times a day
-'use strict';
+// 'use strict';
 var pageToken = '';
 var videoArray = [];
 var links;
@@ -19,26 +11,20 @@ var totalResults;
 // maybe brwoser_action is already considered a pop-up, I dunno
 window.onload = function() {
 //   document.querySelector('button').addEventListener('click', fetchResults(pageToken));
-
-
   chrome.storage.local.get(['videos'], function(result) {
     // console.log(result.videos);
     if (result.videos == undefined){
-      console.log('fetching results');
-      fetchResults(pageToken);
+      getResults(pageToken);
     }
     else{
       getStoredResults();
     }
   });
 
-
-  // fetchResults(pageToken);
-
-
   document.querySelector('#refresh').addEventListener('click', function(){
+    // console.log('refreshing results');
     videoArray = [];
-    fetchResults(pageToken);
+    getResults(pageToken);
   });
 
   //execute search button click if user presses enter
@@ -94,113 +80,119 @@ window.onload = function() {
   }//ends outer for loop (videoArray loop)
 
   if (matches == 0){
-    console.log('matches: ', matches);
+    // console.log('matches: ', matches);
     document.querySelector('#mySearchResults').innerHTML = '<b>Sorry, no liked videos matched those criteria</b>';
   }
 
 });//ends search button functionality code
 
-}
+};
 
 
 
 
-var fetchResults = function(pageToken){
+function getResults(pageToken){
+  console.log('running getResults');
   document.querySelector('#myLoadMessage').innerHTML = "Loading your videos, this may take a moment.";
   document.querySelector("#mySearchBar").style.display = "none";
   document.querySelector("#mySearchButton").style.display = "none";
 
 
   chrome.identity.getAuthToken({interactive: true}, function(token) {
-      var init = {
-        method: 'GET',
-        async: true,
-        headers: {
-          Authorization: 'Bearer ' + token,
-          'Content-Type': 'application/json'
-        },
-        'contentType': 'json'
-      };  
+    var init = {
+      method: 'GET',
+      async: true,
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      'contentType': 'json'
+    };  
+    fetchResults(init);
+    // console.log(token);
 
+  });//ends chrome.identity statement
 
-      fetch('https://www.googleapis.com/youtube/v3/videos?part=snippet&myRating=like&maxResults=' + maxResults + pageToken, init)
-        .then((response) => response.json())
-          .then(function(data){
-            if (pos==0){
-              totalResults = data.pageInfo.totalResults;
-              console.log(totalResults);
-            }
-            // console.log(data);
-            //next page token, for running fetch next time
-            // pageToken = '&pageToken=' + data.nextPageToken;
-            pos += maxResults/10;
-            pageToken = '&pageToken=' + pageTokens[pos];
-            // console.log(pageToken);
-            // console.log(videoArray.length);
-            //add each item to the video array for searching
-            try{
-              links = data.items;
-            var i;
-            for (i=0; i<links.length; i++){
-              var link = 'https://www.youtube.com/watch?v=' + links[i]['id'];
-              var snippet = links[i]['snippet'];
-              var title = snippet.title;
-              var channel = snippet.channelTitle;
-              var thumbnail = snippet.thumbnails.default.url;
-              var item = {'link': link, 'title': title, 'channel':channel, 'thumbnail': thumbnail};
-              videoArray.push(item);
-            }
-          }
-          catch(error){
-            totalResults = 0; //so that the next if clause runs
-            // console.log(error);
+};//ends getResults definition
 
-          }
-          
-      if(videoArray.length >= totalResults){ //referring to my pages, in particular
+function fetchResults(init){
+  // console.log('running fetchResults');
+  // console.log(pageToken);
+  fetch('https://www.googleapis.com/youtube/v3/videos?part=snippet&myRating=like&maxResults=' + maxResults.toString() + pageToken, init)
+    .then((response) => response.json())
+      .then(function(data){
+        if (pos==0){
+          totalResults = data.pageInfo.totalResults;
+          // console.log(totalResults);
+        }
+        // console.log(data);
+        //next page token, for running fetch next time
+        // pageToken = '&pageToken=' + data.nextPageToken;
+        pos += maxResults/10;
+        pageToken = '&pageToken=' + pageTokens[pos];
+        // console.log(data.nextPageToken);
         // console.log(pageToken);
-        // console.log('outOfPages');
-        console.log(videoArray.length);
-        var today = (new Date()).toJSON();
-        chrome.storage.local.set({'videos': videoArray,'date': today}, function(){
-          // console.log(videoArray);
-        });
-        document.querySelector('#myLoadMessage').innerHTML = "Videos loaded. Search away!";
-        document.querySelector("#mySearchBar").style.display = "block";
-        document.querySelector("#mySearchButton").style.display = "block";
-        //add Search functionality to search button now
-        //searching for each word, by channel or title only
-
+        // console.log(videoArray.length);
+        //add each item to the video array for searching
+        try{
+          links = data.items;
+        var i;
+        for (i=0; i<links.length; i++){
+          var link = 'https://www.youtube.com/watch?v=' + links[i]['id'];
+          var snippet = links[i]['snippet'];
+          var title = snippet.title;
+          var channel = snippet.channelTitle;
+          var thumbnail = snippet.thumbnails.default.url;
+          var item = {'link': link, 'title': title, 'channel':channel, 'thumbnail': thumbnail};
+          videoArray.push(item);
+        }
+      }
+      catch(error){
+        totalResults = 0; //so that the next if clause runs
+        console.log(error);
 
       }
-      else{
-        fetchResults(pageToken);
-      }
-           
-
-        });//ends function using data
-  
-      //keep looging next page token until there are no more pages, thanks to:::
-        //TRYING: https://stackoverflow.com/questions/45008330/how-can-i-use-fetch-in-while-loop
       
-        
-
-      });//ends chrome.identity statement
-
-
- }//ends fetchReults definition
-
-
-var getStoredResults = function(){
-    chrome.storage.local.get(['videos', 'date'], function(result) {
-      videoArray = result.videos;
-      var storedDate = new Date(result.date);
-      // console.log(storedDate);
-      document.querySelector('#date').innerHTML = "This video list was last updated on " + storedDate.toLocaleDateString("en-US")  + "."; 
-      document.querySelector('#myLoadMessage').innerHTML = "Videos loaded. Search away!";
-      document.querySelector("#mySearchBar").style.display = "block";
-      document.querySelector("#mySearchButton").style.display = "block";
+  if(videoArray.length >= totalResults){ //referring to my pages, in particular
+    // console.log(pageToken);
+    // console.log('outOfPages');
+    // console.log(videoArray.length);
+    var today = (new Date()).toJSON();
+    chrome.storage.local.set({'videos': videoArray,'date': today}, function(){
+      // console.log(videoArray);
     });
+    document.querySelector('#myLoadMessage').innerHTML = "Videos loaded. Search away!";
+    document.querySelector("#mySearchBar").style.display = "block";
+    document.querySelector("#mySearchButton").style.display = "block";
+    //add Search functionality to search button now
+    //searching for each word, by channel or title only
+
+
+  }
+  else{
+    // console.log('fetchingResults again')
+    fetchResults(init);
+  }
+       
+
+    });//ends function using data
+
+  //keep looging next page token until there are no more pages, thanks to:::
+    //TRYING: https://stackoverflow.com/questions/45008330/how-can-i-use-fetch-in-while-loop
+      
+}//ends fetchResults definition
+
+
+function getStoredResults (){
+  chrome.storage.local.get(['videos', 'date'], function(result) {
+    videoArray = result.videos;
+    var storedDate = new Date(result.date);
+    // console.log(storedDate);
+    document.querySelector('#date').innerHTML = "This video list was last updated on " + storedDate.toLocaleDateString("en-US")  + "."; 
+    document.querySelector('#myLoadMessage').innerHTML = "Videos loaded. Search away!";
+    document.querySelector("#mySearchBar").style.display = "block";
+    document.querySelector("#mySearchButton").style.display = "block";
+  });
     
 };
 
