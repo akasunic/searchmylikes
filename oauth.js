@@ -81,7 +81,7 @@ window.onload = function() {
 
   if (matches == 0){
     // console.log('matches: ', matches);
-    document.querySelector('#mySearchResults').innerHTML = '<b>Sorry, no liked videos matched those criteria</b>';
+    document.querySelector('#mySearchResults').innerHTML = '<h3 style="color:rgb(219,3,5)"><b>Sorry, no liked videos matched those criteria.</b></h3>';
   }
 
 });//ends search button functionality code
