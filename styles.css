@@ -1,7 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Oswald&display=swap');
+
 body{
-	font-family: 'Roboto', sans-serif;
+	font-family: 'Montserrat', sans-serif;
 
 }
+
+
 
 .container{
 	margin: 20 20 20 20;
@@ -12,6 +16,11 @@ body{
 
 img{
 	align-self:center;
+}
+
+#load_gif{
+	display:none;
+	align-self:flex-start;
 }
 
 .container2{
@@ -25,14 +34,15 @@ img{
 	margin: 20 20 20 20;
 }
 
-.inline, .inline{
+.inline{
 	display:flex;
 	flex-direction: row;
 	align-items: stretch;
 }
 
 button{
-	margin:0px 0px 0px 10px;
+	font-family:'Oswald', sans-serif;
+	margin:0px 7px 0px 10px;
 	border-radius:10px;
 	transition: all 0.4s ease 0s;
 }
@@ -40,6 +50,9 @@ button{
 #refresh{
 	background:#ef9f07;
 	color:white;
+	padding: 5px;
+	margin-left:0px;
+	/*font-size: medium;*/
 }
 
 #mySearchButton {
@@ -63,6 +76,7 @@ button:hover{
 
 #myLoadMessage{
 	margin: 0px 0px 10px 0px;
+	align-self:flex-start;
 }
 
 
@@ -77,4 +91,10 @@ button:hover{
 a{
 	word-wrap: break-word;
 
+}
+
+input{
+	border-radius:10px;
+	border-style:solid;
+	border-color:#dddddd;
 }

@@ -6,15 +6,21 @@
    </head>
    <body>
     <div class="container">
-    <div id="myLoadMessage">Loading your videos, this may take a moment.</div>
+    <img id ="load_gif" style="display:none;" src="loading.gif"></img>
+    <div id="myLoadMessage">
+      <h1>Loading your videos, this may take a moment.</h1>
+    </div>
     <div class="inline">
-      <input type="text" id="mySearchBar" placeholder="Search your liked videos...">
+      <input type="text" id="mySearchBar">
       <button id="mySearchButton">Search</button>
     </div>
-    <div class = "inline">
-      <i><span id = 'date'></span></i>
-      <span>&nbsp;Update to latest list of like videos --></span>
-      <button id = 'refresh'>update</button>
+    <!-- <div class = "inline"> -->
+   
+     <i><p id = 'date'></p></i>
+     <div class="inline">
+      <button class = "inline" id = 'refresh'>update</button>
+      <span style="align-self:center;">to latest list of liked videos.</span>
+      <!-- <button class = "inline" id = 'refresh'>update</button> -->
     </div>
     <div id="mySearchResults"></div>
   </div>

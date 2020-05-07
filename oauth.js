@@ -93,7 +93,8 @@ window.onload = function() {
 
 function getResults(pageToken){
   console.log('running getResults');
-  document.querySelector('#myLoadMessage').innerHTML = "Loading your videos, this may take a moment.";
+  document.querySelector('#load_gif').style.display="block";
+  document.querySelector('#myLoadMessage').innerHTML = "<h3>Loading your videos, this may take a moment.</h3>";
   document.querySelector("#mySearchBar").style.display = "none";
   document.querySelector("#mySearchButton").style.display = "none";
 
@@ -123,7 +124,7 @@ function fetchResults(init){
       .then(function(data){
         if (pos==0){
           totalResults = data.pageInfo.totalResults;
-          // console.log(totalResults);
+          console.log(totalResults);
         }
         // console.log(data);
         //next page token, for running fetch next time
@@ -153,15 +154,16 @@ function fetchResults(init){
 
       }
       
-  if(videoArray.length >= totalResults){ //referring to my pages, in particular
+  if(videoArray.length >= totalResults){
     // console.log(pageToken);
     // console.log('outOfPages');
-    // console.log(videoArray.length);
+    console.log(videoArray.length);
     var today = (new Date()).toJSON();
     chrome.storage.local.set({'videos': videoArray,'date': today}, function(){
       // console.log(videoArray);
     });
-    document.querySelector('#myLoadMessage').innerHTML = "Videos loaded. Search away!";
+    document.querySelector('#load_gif').style.display="none";
+    document.querySelector('#myLoadMessage').innerHTML = "<h3>Search for terms in the channel names or video titles of your liked videos.</h3>";
     document.querySelector("#mySearchBar").style.display = "block";
     document.querySelector("#mySearchButton").style.display = "block";
     //add Search functionality to search button now
@@ -189,7 +191,7 @@ function getStoredResults (){
     var storedDate = new Date(result.date);
     // console.log(storedDate);
     document.querySelector('#date').innerHTML = "This video list was last updated on " + storedDate.toLocaleDateString("en-US")  + "."; 
-    document.querySelector('#myLoadMessage').innerHTML = "Videos loaded. Search away!";
+    document.querySelector('#myLoadMessage').innerHTML = "<h3>Search for terms in the channel names or video titles of your liked videos.</h3>";
     document.querySelector("#mySearchBar").style.display = "block";
     document.querySelector("#mySearchButton").style.display = "block";
   });
@@ -1699,7 +1701,7 @@ var pageTokens =
 "CPp0EAA",
 "CIR1EAA",
 "CI51EAA",
-"CJh1EAA",
+"CJh3EAA",
 "CKJ1EAA",
 "CKx1EAA",
 "CLZ1EAA",
@@ -1707,7 +1709,7 @@ var pageTokens =
 "CMp1EAA",
 "CNR1EAA",
 "CN51EAA",
-"COh1EAA",
+"COh3EAA",
 "CPJ1EAA",
 "CPx1EAA",
 "CIZ2EAA",
